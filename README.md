@@ -1,4 +1,18 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the beginning template for a project that will be completed during after hours during the Single Page Applications sprint.
+
+## Objectives
+    1. Build a homepage with a '/' route.
+    2. Write tests for a build-a-burger form. We will write the tests first (test-driven-development).
+    3. Build the build-a-burger form with a '/burger-form' route.
+        a. Name field (person ordering)
+        b. Phone number field
+        c. Choice of bun (sesame seed, pretzel, brioche, clabatta, kaiser roll) dropdown
+        d. Number of patties (1, 2 or 3) radio buttons
+        e. Choice of condiments and fixings checkboxes - ketchup, mustard, mayonaise, barbecue sauce, lettuce, tomato, onion, pickle
+        f. Special instrunctions or request textarea
+    4. Order burger button
+    5. Display the order
+
 
 ## Available Scripts
 
