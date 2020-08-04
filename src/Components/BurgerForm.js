@@ -1,6 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import * as yup from 'yup';
 import styled from "styled-components";
+
+const schema = yup.object().shape({
+    name: yup.string().required('Please enter your name').min(3, 'That\s not a real name'),
+    phone: yup.string().required('Please enter a phone number.').matches(/^[0-9]{10}$/, 'Please enter a valid phone numnber')
+})
 
 const defaultFormState = {
     name: "",
@@ -30,6 +35,19 @@ const BurgerForm = props => {
     const [errors, setErrors] = useState(defaultErrorState);
     const [isDisabled, setIsDisabled] = useState(true);
 
+    useEffect(() => {
+        schema.isValid(formState).then(valid => {
+          setIsDisabled(!valid);
+        });
+      }, [formState]);
+
+    const validate = e => {
+        e.persist();
+        yup.reach(schema, e.target.name).validate(e.target.value)
+        .then(valid => setErrors({...errors, [e.target.name]: ''}))
+        .catch(err => setErrors({...errors, [e.target.name]: err.errors[0]}));
+    }
+
     const handleChange = e => {
         if (e.target.type === 'checkbox') {
             setFormState({
@@ -45,6 +63,9 @@ const BurgerForm = props => {
                  [e.target.name]: e.target.value
             })
         }
+        if (e.target.name === 'name' || e.target.name === 'phone') {
+            validate(e);
+        }
     }
 
     const handleSubmit = e => {
@@ -58,15 +79,18 @@ const BurgerForm = props => {
             <label>
                 Name
                 <input type='text' name='name' onChange={handleChange} value={formState.name} data-cy='name' />
+                {errors.name.length > 0 && <p style={{color:'red'}}>{errors.name}</p>}
             </label>
             <label>
                 Phone Number
                 <input type='tel' name='phone' onChange={handleChange} value={formState.phone} data-cy='phone' />
+
+                {errors.phone.length > 0 && <p style={{color:'red'}}>{errors.phone}</p>}
             </label>
 
             <label>
                 Select Bun
-                <select name="bun" data-cy='bun' defaultValue='Sesame Seed' onChange={handleChange}>
+                <select name="bun" data-cy='bun' defaultValue='Pretzel' onChange={handleChange}>
                    <option value="Sesame Seed">Sesame Seed</option> 
                    <option value="Pretzel">Pretzel</option>
                    <option value="Brioche">Brioche</option>
@@ -131,7 +155,7 @@ const BurgerForm = props => {
                 <textarea name="instructions" data-cy="instructions" onChange={handleChange} value={formState.instructions}/>
             </label>
 
-            <button type="submit" disabled={false}>Order Your Burger</button>
+            <button type="submit" disabled={isDisabled}>Order Your Burger</button>
             </form>
         </FormContainer>
     );
